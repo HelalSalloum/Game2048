@@ -67,7 +67,7 @@ namespace Game2048
 						number,
 						new Font("Arial", 16),
 						Brushes.Blue,
-						new Rectangle(x * (int)cellWidht, (int)statPanelHeight + y * (int)cellHeight, (int)cellWidht, (int)cellHeight),
+						new RectangleF(x * cellWidht, statPanelHeight + y * cellHeight, cellWidht, cellHeight),
 						new StringFormat
 						{
 							Alignment = StringAlignment.Center,

@@ -9,9 +9,9 @@ namespace Game2048
 	public enum Direction
 	{
 		Left,
+		Down,
 		Right,
-		Up,
-		Down
+		Up
 	}
 
 	public enum GameType
@@ -27,7 +27,6 @@ namespace Game2048
 		public readonly GameType type;
 		public int Score { get; private set; }
 
-		Dictionary<Direction, Func<bool>> funcByDir;
 		private int[] realValues;
 
 		public GameModel(int size, GameType type)
@@ -35,11 +34,6 @@ namespace Game2048
 			this.type = type;
 			Size = size;
 			Board = new int[size, size];
-			funcByDir = new Dictionary<Direction, Func<bool>>();
-			funcByDir[Direction.Left] = MoveLeft;
-			funcByDir[Direction.Right] = MoveRight;
-			funcByDir[Direction.Up] = MoveUp;
-			funcByDir[Direction.Down] = MoveDown;
 
 			realValues = new int[21];
 			if (type == GameType.Original)
@@ -128,6 +122,21 @@ namespace Game2048
 			return;
 		}
 
+		void Rotate()
+		{
+			int[,] rotatedBoard = new int[Size, Size];
+			for (int x = 0; x < Size; x++)
+				for (int y = 0; y < Size; y++)
+				{
+					int nx = Size - 1 - y;
+					int ny = x;
+					rotatedBoard[nx, ny] = Board[x, y];
+				}
+			for (int x = 0; x < Size; x++)
+				for (int y = 0; y < Size; y++)
+					Board[x, y] = rotatedBoard[x, y];
+		}
+
 		bool MoveLeft()
 		{
 			bool changed = false;
@@ -160,107 +169,17 @@ namespace Game2048
 			}
 			return changed;
 		}
-		bool MoveRight()
-		{
-			bool changed = false;
-			for (int y = 0; y < Size; y++)
-			{
-				int pos = Size - 1;
-				bool canMerge = false;
-				for (int x = Size - 1; x >= 0; x--)
-				{
-					if (Board[x, y] == 0) continue;
-					int merged = -1;
-					if (canMerge) merged = Merge(Board[pos + 1, y], Board[x, y]);
-					if (merged != -1)
-					{
-						changed |= true;
-						Board[pos + 1, y] = merged;
-						Score += GetValue(merged);
-						canMerge = false;
-					}
-					else
-					{
-						changed |= (pos != x);
-						Board[pos, y] = Board[x, y];
-						pos--;
-						canMerge = true;
-					}
-				}
-				for (; pos >= 0; pos--)
-					Board[pos, y] = 0;
-			}
-			return changed;
-		}
-		bool MoveUp()
-		{
-			bool changed = false;
-			for (int x = 0; x < Size; x++)
-			{
-				int pos = 0;
-				bool canMerge = false;
-				for (int y = 0; y < Size; y++)
-				{
-					if (Board[x, y] == 0) continue;
-					int merged = -1;
-					if (canMerge) merged = Merge(Board[x, pos - 1], Board[x, y]);
-					if (merged != -1)
-					{
-						changed |= true;
-						Board[x, pos - 1] = merged;
-						Score += GetValue(merged);
-						canMerge = false;
-					}
-					else
-					{
-						changed |= (pos != y);
-						Board[x, pos] = Board[x, y];
-						pos++;
-						canMerge = true;
-					}
-				}
-				for (; pos < Size; pos++)
-					Board[x, pos] = 0;
-			}
-			return changed;
-		}
-		bool MoveDown()
-		{
-			bool changed = false;
-			for (int x = 0; x < Size; x++)
-			{
-				int pos = Size - 1;
-				bool canMerge = false;
-				for (int y = Size - 1; y >= 0; y--)
-				{
-					if (Board[x, y] == 0) continue;
-					int merged = -1;
-					if (canMerge) merged = Merge(Board[x, pos + 1], Board[x, y]);
-					if (merged != -1)
-					{
-						changed |= true;
-						Board[x, pos + 1] = merged;
-						Score += GetValue(merged);
-						canMerge = false;
-					}
-					else
-					{
-						changed |= (pos != y);
-						Board[x, pos] = Board[x, y];
-						pos--;
-						canMerge = true;
-					}
-				}
-				for (; pos >= 0; pos--)
-					Board[x, pos] = 0;
-			}
-			return changed;
-		}
 
 		public void EvaluateMove(Direction dir)
 		{
-			if (!funcByDir[dir]()) return;
-			AddRandomElement();
+			bool changed = false;
+			for (int i = 0; i < 4; i++)
+			{
+				if ((int)dir == i)
+					changed |= MoveLeft();
+				Rotate();
+			}
+			if (changed) AddRandomElement();
 		}
 	}
 }
