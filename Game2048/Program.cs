@@ -15,10 +15,10 @@ namespace Game2048
 		[STAThread]
 		static void Main()
 		{
-			GameModel game = new GameModel(7, GameType.Fibonacci);
+			GameModel game = new GameModel(2, GameType.Original);
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
-			Application.Run(new MyForm(game));
+			Application.Run(new Form2048(game));
 		}
 	}
 }

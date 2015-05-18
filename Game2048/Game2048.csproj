@@ -47,9 +47,16 @@
     <Compile Include="Form2048.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="FormAskingName.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormScoreboard.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="GameLogic.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ScoreboardLogic.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
